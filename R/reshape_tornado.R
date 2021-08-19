@@ -16,6 +16,7 @@
 #'   subsetting the samples.
 #' @param decreasing A `logical(1)`: sort from high to low (`TRUE`) or from low
 #'   to high (`FALSE`)?
+#' @param ... Not currently in use.
 #'
 #' @return The `tornado` dataset with the features reordered.
 #' @export
@@ -29,7 +30,8 @@ sort_tornado <- function(
   bin_subset  = NULL,
   bin_weights = NULL,
   sample_subset = NULL,
-  decreasing = TRUE
+  decreasing = TRUE,
+  ...
 ) {
   assay <- match.arg(assay_name, assayNames(tornado))
   dim <- dim(tornado)
@@ -54,6 +56,7 @@ sort_tornado <- function(
   }
 
   order <- order(get_keydata(tornado, "row"), order)
+  metadata(tornado) <- c(metadata(tornado), list(sorted = TRUE))
   tornado[order,]
 }
 

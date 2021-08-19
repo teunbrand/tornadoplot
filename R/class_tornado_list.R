@@ -77,7 +77,9 @@ new_tornado_list <- function(
 
 #' @importFrom vctrs field
 get_tl_matrices <- function(x, unclass = FALSE) {
-  x <- field(x, "colour_matrices")
+  if (inherits(x, "tornado_list")) {
+    x <- field(x, "colour_matrices")
+  }
   if (unclass) {
     unclass(x)
   } else {

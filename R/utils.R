@@ -14,6 +14,7 @@
 #' @param arg A `character(1)` for the argument being checked. This is used to
 #'   identify the argument in error messaging. Defaults to the symbol used for
 #'   `x`.
+#' @param ... Not currently used.
 #'
 #' @return It returns `x` if it satisfies the criteria, or `x` coerced to the
 #'   `type` class when appropriate.
@@ -39,7 +40,7 @@ norm_type_or_null <- function(x, type, length = 1, allow_NAs = FALSE,
 setGeneric(
   "norm_type", signature = c("x", "type"),
   function(x, type, length = 1, allow_NAs = FALSE,
-           arg = deparse(substitute(x))) {
+           arg = deparse(substitute(x)), ...) {
     standardGeneric("norm_type")
   }
 )
@@ -49,7 +50,7 @@ setGeneric(
 setMethod(
   "norm_type", signature(x = "ANY", type = "numeric"),
   function(x, type, length = 1, allow_NAs = FALSE,
-           arg = deparse(substitute(x))) {
+           arg = deparse(substitute(x)), ...) {
     force(arg)
     x <- expect_length(x, length, arg)
     x <- expect_NAs(x, allow_NAs, arg)
@@ -71,7 +72,7 @@ setMethod(
 setMethod(
   "norm_type", signature(x = "ANY", type = "integer"),
   function(x, type, length = 1, allow_NAs = FALSE,
-           arg = deparse(substitute(x))) {
+           arg = deparse(substitute(x)), ...) {
     force(arg)
     x <- norm_type(x, numeric(), length = length, allow_NAs = allow_NAs,
                    arg = arg)
