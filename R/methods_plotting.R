@@ -1,38 +1,3 @@
-# Tornadoplot -------------------------------------------------------------
-
-#' Make a tornado plot.
-#'
-#' The `tornado_plot()` function exists to easily jot down a tornado plot. It
-#' will print the plot and return the data used for plotting with the plot
-#' itself in the metadata. This function performs the tasks of retrieving and
-#' aggregating data from its source with [`build_tornado()`], optionally sorting
-#' the result with [`sort_tornado`] and finally plotting.
-#'
-#' @inheritDotParams build_tornado
-#' @param sort A `logical(1)`. Should the tornado be sorted from high to low?
-#'
-#' @return A \linkS4class{TornadoExperiment} object with a `ggplot` object in
-#'   the [`metadata()`][S4Vectors::Annotated-class] annotation.
-#' @export
-#' @importFrom S4Vectors metadata<-
-#'
-#' @examples
-#' feats <- dummy_features()
-#' file  <- dummy_granges_data()
-#'
-#' tornado_plot(feats, file, width = 3000)
-tornado_plot <- function(..., sort = TRUE) {
-  tor <- build_tornado(...)
-  if (isTRUE(sort)) {
-    tor <- sort_tornado(tor)
-  }
-  df <- prep_tornado(tor)
-  g  <- autoplot(df)
-  print(g)
-  metadata(tor) <- list(plot = g)
-  invisible(tor)
-}
-
 # Autolayer ---------------------------------------------------------------
 
 #' @importFrom ggplot2 autolayer
@@ -61,61 +26,71 @@ autolayer.tornado_df <- function(object, ...) {
   )
 }
 
+# Autoplot ----------------------------------------------------------------
+
+#' Autoplot methods for tornado plots
+#'
+#' @param object A \linkS4class{TornadoExperiment} or `tornado_df` object.
+#' @param facet A `logical(1)` or ggplot2 facet. If `TRUE`, a
+#'   [`facet_tornado()`][facet_tornado()] is added. If `FALSE`, no facet will
+#'   be added. When a ggplot2 facet, the facet is added to the plot.
+#' @param x_scale A `logical(1)` or ggplot2 x scale. If `TRUE`, an x scale is
+#'   added that attempts to avoid overlapping labels.
+#' @param y_scale  A `logical(1)` or ggplot2 y scale. If `TRUE`, a y scale is
+#'   added that marks regular intervals but only labels the number of features.
+#' @param ... Used in the \linkS4class{TornadoExperiment} method to pass the
+#'   `facet`, `x_scale` and `y_scale` arguments to the `tornado_df` method.
+#'
+#' @return A ggplot object.
+#' @name autoplot_methods
+#'
+#' @examples
+#' NULL
+NULL
+
 #' @importFrom ggplot2 autoplot ggplot
 #' @method autoplot tornado_df
 #' @export
+#' @rdname autoplot_methods
 autoplot.tornado_df <- function(
   object, ...,
   facet = TRUE, x_scale = TRUE, y_scale = TRUE
 ) {
   g <- ggplot() +
-    autolayer(object, ...)
+    autolayer(object, inherit.aes = FALSE)
 
   # Set axis titles manually instead of via scales.
-  # This prevents them being 'baked in',
-  # so they can be overridden with `+ labs(x = ..., y = ...)`.
-  g$labels[["x"]] <- "Position relative to center"
-  g$labels[["y"]] <- "Features"
+  # This prevents them being 'baked in', so they can be overridden with
+  # `+ labs(x = ..., y = ...)`.
+  g$labels[["x"]] <- g$labels[["x"]] %||% "Position relative to center"
+  g$labels[["y"]] <- g$labels[["y"]] %||% "Features"
 
   if (isTRUE(x_scale)) {
-    x_scale <-
-      ggplot2::scale_x_continuous(
-        expand = c(0, 1),
-        breaks = function(x) {
-          dodge  <- diff(range(x)) * 0.1
-          breaks <- scales::extended_breaks()(x)
-          breaks[breaks > (x[1] + dodge) & breaks < (x[2] - dodge)]
-        }
-      )
+    x_scale <- scale_x_tornado()
   }
   if (inherits(x_scale, "ScaleContinuousPosition")) {
     g <- g + x_scale
   }
   if (isTRUE(y_scale)) {
     y_lim <- range(object$ymin, object$ymax, object$y)
-    y_breaks <- scales::extended_breaks()(y_lim)
-    y_breaks <- sort(union(y_breaks, y_lim - c(0, 0.5)))
-    y_scale <-
-      ggplot2::scale_y_continuous(
-        expand = c(0, 0),
-        limits = c(0.5, NA),
-        breaks = y_breaks,
-        labels = function(x) {
-          c(rep("", length(x) - 1), x[length(x)])
-        }
-      )
+    y_scale <- scale_y_tornado(alt_lim = y_lim)
   }
   if (inherits(y_scale, "ScaleContinuousPosition")) {
     g <- g + y_scale
   }
   if (isTRUE(facet)) {
-    g <- g + facet_tornado(object)
+    facet <- facet_tornado(object)
+  }
+  if (inherits(facet, "Facet") || inherits(facet[[1]], "Facet")) {
+    g <- g + facet
   }
   g
 }
 
 #' @method autoplot TornadoExperiment
 #' @export
+#' @inheritParams prep_tornado
+#' @rdname autoplot_methods
 autoplot.TornadoExperiment <- function(
   object, ...,
   upper = "q0.99", lower = 0,
@@ -321,6 +296,56 @@ facet_tornado <- function(
     facet <- facet_null(shrink = shrink %||% TRUE)
   }
   return(facet)
+}
+
+scale_x_tornado <- function(
+  expand = NULL,
+  breaks = NULL,
+  labels = NULL,
+  guide  = NULL,
+  ...
+) {
+  expand <- expand %||% c(0, 1)
+  guide  <- guide  %||% guide_axis(check.overlap = TRUE)
+  breaks <- breaks %||% function(x) {
+    dodge  <- diff(range(x)) * 0.1
+    breaks <- scales::extended_breaks()(x)
+    breaks[breaks > (x[1] + dodge) & breaks < (x[2] - dodge)]
+  }
+  labels <- labels %||% function(x) {
+    sign <- sign(x)
+    x <- scales::number(x, big.mark = "")
+    x <- gsub("^-", "\u2212", x) # Unicode minus
+    ifelse(sign == 1 & !is.na(sign), paste0("+", x), x)
+  }
+
+  ggplot2::scale_x_continuous(
+    expand = expand, breaks = breaks, labels = labels, guide = guide, ...
+  )
+}
+
+#' @importFrom ggplot2 waiver
+scale_y_tornado <- function(
+  limits = NULL,
+  breaks = waiver(),
+  expand = NULL,
+  labels = NULL,
+  alt_lim = NULL,
+  ...
+) {
+  expand <- expand %||% c(0, 0)
+  labels <- labels %||% function(x) {
+    c(rep("", length(x) - 1), x[length(x)])
+  }
+  if (is.numeric(alt_lim) && inherits(breaks, "waiver")) {
+    breaks <- scales::extended_breaks()(alt_lim)
+    breaks <- sort(union(breaks, alt_lim - c(0, 0.5)))
+  }
+  limits <- limits %||% c(0.5, NA)
+
+  ggplot2::scale_y_continuous(
+    expand = expand, limits = limits, breaks = breaks, labels = labels, ...
+  )
 }
 
 #' @export
