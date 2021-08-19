@@ -15,11 +15,32 @@ norm_type_or_null(
   arg = deparse(substitute(x))
 )
 
-norm_type(x, type, length = 1, allow_NAs = FALSE, arg = deparse(substitute(x)))
+norm_type(
+  x,
+  type,
+  length = 1,
+  allow_NAs = FALSE,
+  arg = deparse(substitute(x)),
+  ...
+)
 
-\S4method{norm_type}{ANY,numeric}(x, type, length = 1, allow_NAs = FALSE, arg = deparse(substitute(x)))
+\S4method{norm_type}{ANY,numeric}(
+  x,
+  type,
+  length = 1,
+  allow_NAs = FALSE,
+  arg = deparse(substitute(x)),
+  ...
+)
 
-\S4method{norm_type}{ANY,integer}(x, type, length = 1, allow_NAs = FALSE, arg = deparse(substitute(x)))
+\S4method{norm_type}{ANY,integer}(
+  x,
+  type,
+  length = 1,
+  allow_NAs = FALSE,
+  arg = deparse(substitute(x)),
+  ...
+)
 }
 \arguments{
 \item{x}{An argument to check.}
@@ -35,6 +56,8 @@ norm_type(x, type, length = 1, allow_NAs = FALSE, arg = deparse(substitute(x)))
 \item{arg}{A \code{character(1)} for the argument being checked. This is used to
 identify the argument in error messaging. Defaults to the symbol used for
 \code{x}.}
+
+\item{...}{Not currently used.}
 }
 \value{
 It returns \code{x} if it satisfies the criteria, or \code{x} coerced to the

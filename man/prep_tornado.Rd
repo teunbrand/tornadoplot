@@ -11,7 +11,8 @@ prep_tornado(
   upper = "q0.99",
   lower = 0,
   scale_title = "Coverage",
-  scale = NULL
+  scale = NULL,
+  ...
 )
 }
 \arguments{
@@ -36,14 +37,16 @@ be overridden when the \code{scale} argument has a non-default name.}
 \item{scale}{A \link[ggplot2:scale_colour_continuous]{continuous fill scale} from
 the ggplot2 package to use to colour the tornado. When \code{NULL} (default),
 the scale will be retrieved from the option \code{"tornadoplot.default.scale"}.}
+
+\item{...}{Not currently used.}
 }
 \value{
 A \code{tornado_df}, \code{data.frame} class object with a modified scale in
 the \code{"scale"} attribute.
 }
 \description{
-Converts a tornado array in a data.frame that is ready to be used with
-the \code{geom_tornado()} layer for the ggplot2 library.
+Converts the data from a \linkS4class{TornadoExperiment} to a \code{data.frame}
+that is accepted in ggplot2 plots.
 }
 \details{
 The typical way of plotting a raster in ggplot2 is with the

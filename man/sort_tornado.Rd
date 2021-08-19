@@ -10,7 +10,8 @@ sort_tornado(
   bin_subset = NULL,
   bin_weights = NULL,
   sample_subset = NULL,
-  decreasing = TRUE
+  decreasing = TRUE,
+  ...
 )
 }
 \arguments{
@@ -32,6 +33,8 @@ subsetting the samples.}
 
 \item{decreasing}{A \code{logical(1)}: sort from high to low (\code{TRUE}) or from low
 to high (\code{FALSE})?}
+
+\item{...}{Not currently in use.}
 }
 \value{
 The \code{tornado} dataset with the features reordered.

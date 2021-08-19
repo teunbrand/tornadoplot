@@ -1,7 +1,7 @@
 #' Prepare tornado array for plotting
 #'
-#' Converts a tornado array in a data.frame that is ready to be used with
-#' the `geom_tornado()` layer for the ggplot2 library.
+#' Converts the data from a \linkS4class{TornadoExperiment} to a `data.frame`
+#' that is accepted in ggplot2 plots.
 #'
 #' @param tornado A \linkS4class{TornadoExperiment} object.
 #' @param assay_name A `character(1)`: one of the assay names retrieved by
@@ -18,6 +18,7 @@
 #' @param scale A [continuous fill scale][ggplot2::scale_fill_continuous()] from
 #'   the ggplot2 package to use to colour the tornado. When `NULL` (default),
 #'   the scale will be retrieved from the option `"tornadoplot.default.scale"`.
+#' @param ... Not currently used.
 #'
 #' @return A `tornado_df`, `data.frame` class object with a modified scale in
 #'   the `"scale"` attribute.
@@ -39,7 +40,7 @@ prep_tornado <- function(
   tornado, assay_name = assayNames(tornado),
   upper = "q0.99", lower = 0,
   scale_title = "Coverage",
-  scale = NULL
+  scale = NULL, ...
 ) {
   assay_name <- match.arg(assay_name, assayNames(tornado))
   data  <- assay(tornado, assay_name)
