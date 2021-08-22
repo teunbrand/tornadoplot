@@ -21,7 +21,6 @@ Imports:
     S4Vectors,
     IRanges,
     GenomicRanges,
-    GenomicAlignments,
     rtracklayer,
     ggplot2,
     Rsamtools,
@@ -31,7 +30,6 @@ Imports:
     SummarizedExperiment,
     MatrixGenerics,
     rlang,
-    DelayedArray,
     GenomeInfoDb,
     scales,
     BiocGenerics,
@@ -42,7 +40,8 @@ Suggests:
     grDevices,
     BiocFileCache,
     matrixStats,
-    covr
+    covr,
+    BiocManager
 Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)

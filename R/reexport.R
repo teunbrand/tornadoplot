@@ -3,10 +3,6 @@
 #' @export
 ggplot2::autoplot
 
-#' @importFrom rtracklayer import
-#' @export
-rtracklayer::import
-
 #' @importFrom rtracklayer BigWigFile
 #' @export
 rtracklayer::BigWigFile

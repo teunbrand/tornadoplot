@@ -4,7 +4,6 @@
 \name{reexports}
 \alias{reexports}
 \alias{autoplot}
-\alias{import}
 \alias{BigWigFile}
 \alias{BigWigFileList}
 \alias{path}
@@ -20,7 +19,7 @@ below to see their documentation.
 
   \item{ggplot2}{\code{\link[ggplot2]{autoplot}}}
 
-  \item{rtracklayer}{\code{\link[rtracklayer]{BigWigFile}}, \code{\link[rtracklayer:BigWigFile]{BigWigFileList}}, \code{\link[rtracklayer:export]{import}}}
+  \item{rtracklayer}{\code{\link[rtracklayer]{BigWigFile}}, \code{\link[rtracklayer:BigWigFile]{BigWigFileList}}}
 
   \item{S4Vectors}{\code{\link[S4Vectors:Annotated-class]{metadata}}}
 }}

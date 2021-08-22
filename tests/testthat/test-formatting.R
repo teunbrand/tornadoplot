@@ -33,7 +33,7 @@ test_that("sample data can be formatted", {
 
   nms <- 10
 
-  nms <- format_sample_name(names = nms, n = 2)
+  nms <- format_sample_name(NULL, names = nms, n = 2)
   expect_equal(nms, c("10_1", "10_2"))
 
 })

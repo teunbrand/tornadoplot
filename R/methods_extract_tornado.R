@@ -87,6 +87,7 @@ setMethod(
 )
 
 #' @importClassesFrom GenomicRanges GRangesList
+#' @importFrom IRanges stack
 setMethod(
   "extract_tornado",
   signature = c(data = "GRangesList"),

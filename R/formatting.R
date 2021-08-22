@@ -73,6 +73,7 @@ format_bin_data <- function(bins) {
 
 # Helpers -----------------------------------------------------------------
 
+# TODO: Include BiocFile when switching to BioC 1.13
 #' @importClassesFrom rtracklayer RTLFileList
 #' @importClassesFrom Rsamtools RsamtoolsFileList
 setClassUnion(
@@ -132,6 +133,13 @@ setMethod(
 setMethod(
   "format_sample_name", "ANY",
   function(data, data_arg, n, names = NULL, ...) {
+    if (hasMethod("path", class(data))) {
+      if (length(data) == 1) {
+        names <- names %||% format_filename(path(data))
+      } else {
+        names <- names %||% names(data) %||% format_filename(path(data))
+      }
+    }
     names <- names %||% data_arg
     if (length(names) != n) {
       names <- paste(names, seq_len(n), sep = "_")
