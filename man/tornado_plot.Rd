@@ -104,7 +104,7 @@ feats <- dummy_features()
 data  <- dummy_granges_data()
 
 # This will extract and plot the data. The extracted data is now stored in x.
-x <- tornado_plot(data, feats, width = 3000)
+x <- tornado_plot(data, features = feats, width = 3000)
 
 # `x` is the data underlying the plot in an TornadoExperiment object.
 print(x)
