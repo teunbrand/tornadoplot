@@ -1,6 +1,10 @@
 # Reshaping ---------------------------------------------------------------
 
-#' Reorder features of a tornado
+#' Reorder features
+#'
+#' The `sort_tornado()` function reorders the features of a
+#' \linkS4class{TornadoExperiment} object based on the weighted sum across all
+#' bins.
 #'
 #' @param tornado A \linkS4class{TornadoExperiment} object.
 #' @param assay_name A `character(1)`: one of the assay names.
@@ -21,9 +25,22 @@
 #' @return The `tornado` dataset with the features reordered.
 #' @export
 #' @importFrom SummarizedExperiment assayNames
+#' @family tornado utilities
 #'
 #' @examples
-#' NULL
+#' # A tornado that isn't sorted
+#' tor <- dummy_tornado()[c(2,1,4,3),]
+#'
+#' # Sorting based on a particular sample
+#' x <- sort_tornado(tor, sample_subset = "dummy_ctrl")
+#'
+#' # Sorting based on a subset of bins
+#' x <- sort_tornado(tor, bin_subset = 21:30)
+#'
+#' # Sorting with custom weights
+#' nbin <- nbin(tor)
+#' w <- dnorm(seq_len(nbin), mean = (nbin + 1)/2, sd = 5)
+#' x <- sort_tornado(tor, bin_weights = w)
 sort_tornado <- function(
   tornado,
   assay_name = assayNames(tornado),
@@ -62,13 +79,32 @@ sort_tornado <- function(
 
 #' Reshape tornado to long format
 #'
+#' The `melt_tornado` emulates for the \linkS4class{TornadoExperiment} class
+#' what the `melt()` function does in the \pkg{reshape2} package. It converts
+#' the data to long format, which is the format of choice in the \pkg{tidyverse}
+#' family of packages.
+#'
 #' @inheritParams sort_tornado
 #'
-#' @return A `data.frame`
+#' @return A `data.frame` with `prod(dim(tornado))` rows.
+#'
+#' @note For plotting purposes, the [`prep_tornado()`][prep_tornado()] function
+#' does a more efficient job than `melt_tornado()`.
+#'
 #' @export
+#' @family tornado utilities
 #'
 #' @examples
-#' NULL
+#' # Melt a tornado
+#' tor <- dummy_tornado()
+#' # Reshaping to long format
+#' df  <- melt_tornado(tor)
+#'
+#' # Building a tornado plot from scratch
+#' require(ggplot2)
+#' ggplot(df, aes(position, feature_nr)) +
+#'   geom_raster(aes(fill = value)) +
+#'   facet_grid(feature_set ~ sample_name)
 melt_tornado <- function(tornado, assay_name = assayNames(tornado)) {
   assay <- match.arg(assay_name, assayNames(tornado))
 
@@ -76,37 +112,58 @@ melt_tornado <- function(tornado, assay_name = assayNames(tornado)) {
   feat_num <- get_feature_num(tornado)
   samp_dat <- get_sample_data(tornado)
 
-  cbind.data.frame(
+  ans <- cbind.data.frame(
     samp_dat[flat_idx(tornado, 2), ],
     feat_num[flat_idx(tornado, 1), ],
     position = position[flat_idx(tornado, 3)],
-    value = as.vector(assay(tornado, assay_name)),
+    value = as.vector(assay(tornado, assay_name))
   )
+  rownames(ans) <- NULL
+  ans
 }
 
+
+#' Normalise samples
+#'
+#' Normalise the samples in a \linkS4class{TornadoExperiment} by dividing their
+#' values by some scaling factor.
+#'
+#' @inheritParams sort_tornado
+#' @param scale A `numeric` vector or length `ncol(tornado)` with normalisation
+#'   factors.
+#' @param assay_to A `character(1)` for the target assay name for the normalised
+#'   data. Defaults to the `assay_name` assay, thereby replacing input data.
+#'
+#' @return A \linkS4class{TornadoExperiment} object.
+#' @export
+#' @family tornado utilities
 #' @importFrom SummarizedExperiment assay<-
-norm_samples <- function(x, scale,
-                         assay = assayNames(x), assay_to = assay) {
+#'
+#' @examples
+#' tor <- dummy_tornado()
+#' tor <- norm_tornado(tor, c(1, 2))
+norm_tornado <- function(
+  tornado, scale,
+  assay_name = assayNames(tornado), assay_to = assay_name) {
   if (length(scale) == 1) {
-    scale <- rep(scale, ncol(x))
+    scale <- rep(scale, ncol(tornado))
   }
-  if (!is.null(names(scale)) && !is.null(colnames(x))) {
-    i <- match(names(scale), colnames(x))
+  if (!is.null(names(scale)) && !is.null(colnames(tornado))) {
+    i <- match(names(scale), colnames(tornado))
     scale <- scale[i]
   }
   stopifnot(
     "Cannot match up the 'scale' parameter with columns in 'x'." =
-      length(scale) == ncol(x),
+      length(scale) == ncol(tornado),
     "Scale cannot contain NAs" =
       all(!is.na(scale))
   )
-  assay    <- match.arg(assay,    assayNames(x))
-  assay_to <- match.arg(assay_to, assayNames(x))
-  assay <- assay(x, assay, withDimnames = FALSE)
+  assay_name <- match.arg(assay_name, assayNames(tornado))
+  assay <- assay(tornado, assay_name, withDimnames = FALSE)
 
   assay <- sweep(assay, 2, scale, FUN = "/")
-  assay(x, assay_to, withDimnames = FALSE) <- assay
-  x
+  assay(tornado, assay_to, withDimnames = FALSE) <- assay
+  tornado
 
 }
 
@@ -116,9 +173,7 @@ norm_samples <- function(x, scale,
 #' calculating a statistic over all features in a set. The defaults measure
 #' the mean, standard deviation and number of features.
 #'
-#' @param x A `TornadoExperiment` object.
-#' @param assay An `integer(1)` or `character(1)` forwarded to the `i` argument
-#'   of the [`assay()`][SummarizedExperiment] function.
+#' @inheritParams sort_tornado
 #' @param measure A **named** `list` wherein each element is a `function`.
 #'   Every function is expected to take a `nrow(x)` by `nbin(x)` matrix and
 #'   return one of these results:
@@ -139,23 +194,43 @@ norm_samples <- function(x, scale,
 #'   argument, as well as `position`, `feature_set` and elements from
 #'   `colData(x)`.
 #' @export
+#' @family tornado utilities
 #' @importFrom MatrixGenerics colMeans2 colSds
 #'
 #' @examples
-#' NULL
+#' # Summarise features
+#' tor <- dummy_tornado()
+#' df  <- flatten_features(tor)
+#'
+#' # Estimate standard error of the mean
+#' df$se <- sqrt(df$sd^2 / df$n)
+#'
+#' # Plotting the result
+#' require(ggplot2)
+#' ggplot(df, aes(position, fill = feature_set)) +
+#'   geom_ribbon(aes(ymin = mean - se, ymax = mean + se), alpha = 0.3) +
+#'   geom_line(aes(y = mean, colour = feature_set)) +
+#'   facet_wrap(~ sample_name)
+#'
+#' # Calculating alternative metrics
+#' require(matrixStats)
+#' measure <- list(median = matrixStats::colMedians,
+#'                 mad = matrixStats::colMads,
+#'                 n = nrow)
+#' df <- flatten_features(tor, measure = measure)
 flatten_features <- function(
-  x, assay = assayNames(x),
+  tornado, assay_name = assayNames(tornado),
   measure = list(mean = colMeans2, sd = colSds, n = nrow)
 ) {
-  nbin <- nbin(x)
+  nbin <- nbin(tornado)
   measure <- resolve_measure(measure)
-  assay <- match.arg(assay, assayNames(x))
-  diced <- dice_tornado(x, assay = assay)
+  assay_name <- match.arg(assay_name, assayNames(tornado))
+  diced <- dice_tornado(tornado, assay = assay_name)
 
   # Collect metadata
-  position <- get_bin_position(x)
-  sample   <- get_sample_data(x)
-  featset  <- unique(get_keydata(x, "row"))
+  position <- get_bin_position(tornado)
+  sample   <- get_sample_data(tornado)
+  featset  <- unique(get_keydata(tornado, "row"))
 
   # Do measurements
   ans <- mapply(function(mat, i) {
