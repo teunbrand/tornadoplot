@@ -8,6 +8,7 @@
 \alias{BigWigFile}
 \alias{BigWigFileList}
 \alias{path}
+\alias{metadata}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -20,5 +21,7 @@ below to see their documentation.
   \item{ggplot2}{\code{\link[ggplot2]{autoplot}}}
 
   \item{rtracklayer}{\code{\link[rtracklayer]{BigWigFile}}, \code{\link[rtracklayer:BigWigFile]{BigWigFileList}}, \code{\link[rtracklayer:export]{import}}}
+
+  \item{S4Vectors}{\code{\link[S4Vectors:Annotated-class]{metadata}}}
 }}
 

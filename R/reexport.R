@@ -18,3 +18,7 @@ rtracklayer::BigWigFileList
 #' @importFrom BiocGenerics path
 #' @export
 BiocGenerics::path
+
+#' @importFrom S4Vectors metadata
+#' @export
+S4Vectors::metadata

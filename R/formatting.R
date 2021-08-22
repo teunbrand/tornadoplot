@@ -16,7 +16,7 @@ format_sample_data <- function(data, data_arg, n, ..., barcode_groups = NULL) {
 
   if (hasMethod("path", class(data))) {
     files <- path(data)
-  } else if (is.character(data) && file.exists(data)) {
+  } else if (is.character(data) && all(file.exists(data))) {
     files <- data
   } else {
     files <- NULL

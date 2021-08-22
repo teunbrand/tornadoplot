@@ -11,7 +11,7 @@
 Create plots of feature-centered aggregated genomic coverage tracks as heatmaps.
 }
 \author{
-\strong{Maintainer}: Teun van den Brand \email{first.last@example.com} (\href{https://orcid.org/YOUR-ORCID-ID}{ORCID})
+\strong{Maintainer}: Teun van den Brand \email{t.vd.brand@nki.nl} (\href{https://orcid.org/0000-0002-9335-7468}{ORCID})
 
 }
 \keyword{internal}

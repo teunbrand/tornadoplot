@@ -5,8 +5,8 @@ Authors@R:
     person(given = "Teun",
            family = "van den Brand",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           email = "t.vd.brand@nki.nl",
+           comment = c(ORCID = "0000-0002-9335-7468"))
 Description: Create plots of feature-centered aggregated genomic coverage tracks as heatmaps.
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -37,6 +37,7 @@ Suggests:
     testthat (>= 3.0.0),
     grDevices,
     BiocFileCache,
+    matrixStats,
     covr
 Config/testthat/edition: 3
 Depends: 

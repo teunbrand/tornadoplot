@@ -14,7 +14,6 @@
 #' @param arg A `character(1)` for the argument being checked. This is used to
 #'   identify the argument in error messaging. Defaults to the symbol used for
 #'   `x`.
-#' @param ... Not currently used.
 #'
 #' @return It returns `x` if it satisfies the criteria, or `x` coerced to the
 #'   `type` class when appropriate.

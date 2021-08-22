@@ -315,8 +315,8 @@ scale_x_tornado <- function(
   labels <- labels %||% function(x) {
     sign <- sign(x)
     x <- scales::number(x, big.mark = "")
-    x <- gsub("^-", "\u2212", x) # Unicode minus
     ifelse(sign == 1 & !is.na(sign), paste0("+", x), x)
+    x
   }
 
   ggplot2::scale_x_continuous(
