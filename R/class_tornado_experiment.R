@@ -327,7 +327,7 @@ setMethod(
       k <- n_index[[3]]
     }
 
-    k <- as.integer(NSBS(k, setNames(nbin(x), binnames(x))))
+    k <- as.integer(NSBS(k, setNames(seq_len(nbin(x)), binnames(x))))
 
     binData <- binData(x)[k, ]
 
