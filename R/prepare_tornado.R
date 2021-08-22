@@ -154,7 +154,7 @@ resolve_scale <- function(
     )
   }
   if (!inherits(scale, "ScaleContinuous")) {
-    stop("Cannot interpret scale as ggplot2 compatible.")
+    stop("Cannot interpret scale as continuous colour scale.")
   }
 
   # Set scale attributes
@@ -176,6 +176,7 @@ resolve_scale <- function(
   }
   guide <- scale$guide
   if (is.character(guide)) {
+    # Should fail here if there is no such function
     guide <- match.fun(paste0("guide_", guide))
   }
   if (is.function(guide)) {
@@ -184,13 +185,6 @@ resolve_scale <- function(
   if (inherits(guide, "guide")) {
     guide$available_aes <- "coverage"
     guide$title <- title
-  } else {
-    warning("Couldn't find the scale's guide. Defaulting to colourbar guide.",
-            call. = FALSE)
-    guide <- guide_colourbar(
-      title = title,
-      available_aes = "coverage"
-    )
   }
   scale$guide <- guide
 
@@ -219,7 +213,7 @@ choose_limits <- function(lower = 0, upper = "q0.99",
     }
     # Determine lower bound of colour scale
     if (!is.numeric(lower)) {
-      if (grepl("^p|^q")) {
+      if (grepl("^p|^q", lower)) {
         num_lower <- as.numeric(gsub("^p|^q", "", lower))
         if (grepl("^p", lower)) {
           num_lower <- num_lower / 100
