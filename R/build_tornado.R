@@ -212,22 +212,3 @@ resolve_features <- function(features, bins,
   metadata(features) <- list(lengths = feat_len)
   return(features)
 }
-
-resolve_selection <- function(features, arg = deparse(substitute(features))) {
-  if (inherits(features, "GRangesList")) {
-    features <- unlist(features)
-  }
-  if (!inherits(features, "GRanges")) {
-    msg <- paste0("Expected `", arg,
-                  "` to be a `GRanges` or `GRangesList` object.")
-    stop(msg, .call = FALSE)
-  }
-  reduce(features)
-  features <- keepSeqlevels(features, seqlevelsInUse(features))
-}
-
-
-
-
-
-

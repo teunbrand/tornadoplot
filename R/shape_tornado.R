@@ -253,54 +253,6 @@ flatten_features <- function(
   ans
 }
 
-#' Collapse tornado features
-#'
-#' Use a summarising function to collapse a tornado along the features.
-#'
-#' @param tornado A `tornado_array` dataset.
-#' @param fun A function to apply to a matrix build from every section of the
-#'   array.
-#' @param ... Extra arguments to pass to the `fun` function.
-#'
-#' @return A `data.frame` with `value`, `feature_set`, `position` and `sample`
-#'   columns.
-#' @export
-#'
-#' @examples
-#' NULL
-collapse_tornado <- function(tornado, fun = colMeans, ...) {
-  tor <- tornado$tornado
-  dim <- dim(tor)
-
-  bins <- tornado$row_dat
-  bins <- runValue(bins) * runLength(bins) - length(bins) * 0.5 -
-    0.5 * runLength(bins)[1]
-
-  # Split tornado along samples
-  tor <- split(tor, slice.index(tor, 3))
-
-  # Split samples along feature sets
-  tor <- lapply(tor, function(x) {
-    dim(x) <- dim[1:2]
-    x <- split.data.frame(t(x), decode(tornado$col_dat))
-    x <- lapply(x, fun)
-    lens <- lengths(x)
-    x <- unlist(x, use.names = FALSE)
-    names <- names(lens)
-    list2DF(list(
-      value = x,
-      feature_set = rep.int(names(lens), lens),
-      position = rep(bins, length(lens))
-    ))
-  })
-  lens <- vapply(tor, nrow, integer(1))
-  tor  <- do.call(rbind, c(tor, list(make.row.names = FALSE,
-                                     deparse.level = 0)))
-  tor$sample <- tornado$slice_dat[rep.int(seq_along(lens), lens)]
-
-  return(tor)
-}
-
 # Dicing ------------------------------------------------------------------
 
 .dice_tornado <- function(x, f, ...) {
@@ -448,11 +400,7 @@ resolve_listmatrix <- function(x, nbin) {
   x[rows == dim[2]] <- lapply(x[rows == dim[2]], rep, each = nbin)
   delete <- vapply(x, NROW, integer(1)) != (dim[2] * nbin)
   if (any(delete)) {
-    msg <- names(delete)[delete]
-    if (length(msg) > 1) {
-      msg <- paste0(paste0(msg[-length(msg)], collapse = ", "),
-                    " and ", msg[length(msg)])
-    }
+    msg <- comma_and(names(delete)[delete])
     msg <- paste0("The following measurements had inappropriate lengths: ",
                   msg)
     warning(msg, call. = FALSE)
@@ -513,13 +461,6 @@ get_sample_data <- function(x) {
 with_dim <- function(x, dim) {
   dim(x) <- dim
   x
-}
-
-bind_list <- function(x) {
-  if (length(x) == 1) {
-    return(x)
-  }
-  bindROWS(x[[1]], x[-1])
 }
 
 flat_idx <- function(x, margin = 1) {
