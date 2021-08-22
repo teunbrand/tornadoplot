@@ -325,6 +325,9 @@ setMethod(
       return(ans)
     } else {
       k <- n_index[[3]]
+      if (is.null(k)) {
+        return(ans)
+      }
     }
 
     k <- as.integer(NSBS(k, setNames(seq_len(nbin(x)), binnames(x))))
