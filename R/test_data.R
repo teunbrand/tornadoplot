@@ -3,16 +3,19 @@
 #' For the purposes of examples and testing the package, tornadoplot includes
 #' some functions that make up some dummy data that isn't too large.
 #'
-#' @param pattern A `character(1)` giving an intial part of a file name.
+#' @param pattern A `character(1)` giving an initial part of a file name.
 #' @param dir A `character(1)` giving a directory name where to create the test
 #'   file.
 #'
-#' @details All the dummy data generators make their data around the genomic
-#'   ranges returned by `dummy_features()`.
+#' @details The `dummy_granges_data()` and `dummy_bigwig()` generators make
+#'   their data around the genomic ranges returned by `dummy_features()`.
 #'
 #'   The `dummy_bigwig()` and `dummy_tabix()` files create files on your system.
 #'   As their usage is intended as temporary files, don't forget to `unlink()`
 #'   their paths and indices after they are no longer needed.
+#'
+#'   The `dummy_tornado()` makes a relatively small
+#'   \linkS4class{TornadoExperiment}.
 #'
 #' @return The return values differ per function. \describe{
 #'  \item{`dummy_features`}{A `GRanges` object of length 2.}
@@ -20,6 +23,8 @@
 #'  \item{`dummy_bigwig`}{A `BigWigFile` object.}
 #'  \item{`dummy_tabix`}{A `TabixFile` object with `"A"` and `"B"` in the 4th
 #'  column.}
+#'  \item{`dummy_tornado`}{A \linkS4class{TornadoExperiment} object with 2
+#'  samples, 4 features and 50 bins.}
 #' }
 #'
 #' @name testdata
@@ -94,6 +99,32 @@ dummy_bigwig <- function(pattern = "file", dir = tempdir()) {
   )
   rtracklayer::export.bw(gr, file)
   BigWigFile(setNames(file, "test bigwig"))
+}
+
+#' @rdname testdata
+#' @export
+dummy_tornado <- function() {
+  b <- resolve_bins(2000, nbin = 50)
+  f <- GRanges(c("chr1:1001-3000", "chr2:1001-3000",
+                 "chr3:1001-3000", "chr4:1001-3000"))
+  f <- split(f, c("A", "A", "B", "B"))
+  f <- resolve_features(f, b)
+
+  d <- c("dummy_ctrl.bw", "dummy_treat")
+
+  ans <- array(NA_real_, dim = c(length(f), length(d), nrun(b)))
+  ans[] <- dlaplace(
+    as.vector(slice.index(ans, 3)),
+    mu = (nrun(b) + 1)/2, b = as.vector(slice.index(ans, 1)) * 10
+  ) * as.vector(slice.index(ans, 2))
+
+  TornadoExperiment(
+    assays = SimpleList(tornado = ans),
+    rowRanges = format_feature_data(f, "feats", n = dim(ans)[1]),
+    colData   = format_sample_data(d, "files", n = dim(ans)[2]),
+    binData   = format_bin_data(b),
+    rowKey = "set", colKey = "sample_name", binKey = "bin_id"
+  )
 }
 
 #' Sox2 and Oct4 binding sites

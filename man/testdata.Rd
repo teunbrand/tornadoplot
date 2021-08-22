@@ -6,6 +6,7 @@
 \alias{dummy_granges_data}
 \alias{dummy_tabix}
 \alias{dummy_bigwig}
+\alias{dummy_tornado}
 \title{Generation of test data}
 \usage{
 dummy_features()
@@ -15,9 +16,11 @@ dummy_granges_data()
 dummy_tabix(pattern = "file", dir = tempdir())
 
 dummy_bigwig(pattern = "file", dir = tempdir())
+
+dummy_tornado()
 }
 \arguments{
-\item{pattern}{A \code{character(1)} giving an intial part of a file name.}
+\item{pattern}{A \code{character(1)} giving an initial part of a file name.}
 
 \item{dir}{A \code{character(1)} giving a directory name where to create the test
 file.}
@@ -29,6 +32,8 @@ The return values differ per function. \describe{
 \item{\code{dummy_bigwig}}{A \code{BigWigFile} object.}
 \item{\code{dummy_tabix}}{A \code{TabixFile} object with \code{"A"} and \code{"B"} in the 4th
 column.}
+\item{\code{dummy_tornado}}{A \linkS4class{TornadoExperiment} object with 2
+samples, 4 features and 50 bins.}
 }
 }
 \description{
@@ -36,12 +41,15 @@ For the purposes of examples and testing the package, tornadoplot includes
 some functions that make up some dummy data that isn't too large.
 }
 \details{
-All the dummy data generators make their data around the genomic
-ranges returned by \code{dummy_features()}.
+The \code{dummy_granges_data()} and \code{dummy_bigwig()} generators make
+their data around the genomic ranges returned by \code{dummy_features()}.
 
 The \code{dummy_bigwig()} and \code{dummy_tabix()} files create files on your system.
 As their usage is intended as temporary files, don't forget to \code{unlink()}
 their paths and indices after they are no longer needed.
+
+The \code{dummy_tornado()} makes a relatively small
+\linkS4class{TornadoExperiment}.
 }
 \examples{
 # All the functions run without arguments
