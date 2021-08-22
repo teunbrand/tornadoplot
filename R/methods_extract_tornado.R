@@ -54,14 +54,12 @@ setMethod(
     data, features, bins,
     pad_value = 0, ...
   ) {
-    if (!all(file.exists(data))) {
-      stop("The `data` argument doesn't appear to be a valid path to a file.",
-           call. = FALSE)
-    }
-    if (!all(endsWith(data, ".bw"))) {
-      stop("The file type is unsupported.",
-           call. = FALSE)
-    }
+    stopifnot(
+      "The `data` argument doesn't appear to be a valid path to a file." =
+        all(file.exists(data)),
+      "The file type is unsupported." =
+        all(endsWith(data, ".bw"))
+    )
     data <- BigWigFileList(data)
     callGeneric(data, features, bins, pad_value, ...)
   }
