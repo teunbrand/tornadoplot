@@ -17,11 +17,13 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/tornadoplot)](https://CRAN.R-project.org/package=tornadoplot)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Codecov test coverage](https://codecov.io/gh/teunbrand/tornadoplot/branch/master/graph/badge.svg)](https://codecov.io/gh/teunbrand/tornadoplot?branch=master)
+[![R-CMD-check](https://github.com/teunbrand/tornadoplot/workflows/R-CMD-check/badge.svg)](https://github.com/teunbrand/tornadoplot/actions)
 <!-- badges: end -->
 
 A tornadoplot\* is a heatmap of coverage from genome wide assays centred at several features. The depth of coverage is encoded in a sequential colour scale. Every row in the heatmap is a genomic locus and every column is a position relative to the centre of some feature. Arranging the rows from high to low coverage gives this heatmap a characteristic shape resembling a tornado. This type of plot is common in the epigenetics and chromatin fields of molecular biology.
 
-The {tornadoplot} package facilitates making these types of heatmaps in R with Bioconductor infrastructure. It can use precalculated coverage data from [bigwig](https://genome.ucsc.edu/goldenpath/help/bigWig.html) files, or calculate coverage *de novo* from [tabix](http://www.htslib.org/doc/tabix.html) files or `GRanges` objects in R. The data can then be plotted with help from the {ggplot2} package. Why does this package exist? Well, because other packages aren't doing things quite the way I want them to be done.
+The {tornadoplot} package facilitates making these types of heatmaps in R with Bioconductor infrastructure. It can use precalculated coverage data from [bigwig](https://genome.ucsc.edu/goldenpath/help/bigWig.html) files, or calculate coverage *de novo* from [tabix](http://www.htslib.org/doc/tabix.html) files or `GRanges` objects in R. The data can then be plotted with help from the {ggplot2} package.
 
 \* This is not a widely used term. It is just more imaginative than yet another type of 'heatmap', which may display anything really.
 

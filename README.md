@@ -9,6 +9,9 @@
 status](https://www.r-pkg.org/badges/version/tornadoplot)](https://CRAN.R-project.org/package=tornadoplot)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Codecov test
+coverage](https://codecov.io/gh/teunbrand/tornadoplot/branch/master/graph/badge.svg)](https://codecov.io/gh/teunbrand/tornadoplot?branch=master)
+[![R-CMD-check](https://github.com/teunbrand/tornadoplot/workflows/R-CMD-check/badge.svg)](https://github.com/teunbrand/tornadoplot/actions)
 <!-- badges: end -->
 
 A tornadoplot\* is a heatmap of coverage from genome wide assays centred
@@ -25,8 +28,6 @@ data from [bigwig](https://genome.ucsc.edu/goldenpath/help/bigWig.html)
 files, or calculate coverage *de novo* from
 [tabix](http://www.htslib.org/doc/tabix.html) files or `GRanges` objects
 in R. The data can then be plotted with help from the {ggplot2} package.
-Why does this package exist? Well, because other packages aren’t doing
-things quite the way I want them to be done.
 
 \* This is not a widely used term. It is just more imaginative than yet
 another type of ‘heatmap’, which may display anything really.
