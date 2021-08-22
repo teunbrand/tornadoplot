@@ -97,7 +97,8 @@ get_tl_scales <- function(x) {
 
 scale_list <- function(x) {
   hashes <- unique(get_tl_hash(x))
-  get_tl_scales(x)[hashes]
+  x <- get_tl_scales(x)[hashes]
+  structure(x, class = "covscale")
 }
 
 # Casting and coercion ----------------------------------------------------

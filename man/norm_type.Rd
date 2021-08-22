@@ -15,32 +15,11 @@ norm_type_or_null(
   arg = deparse(substitute(x))
 )
 
-norm_type(
-  x,
-  type,
-  length = 1,
-  allow_NAs = FALSE,
-  arg = deparse(substitute(x)),
-  ...
-)
+norm_type(x, type, length = 1, allow_NAs = FALSE, arg = deparse(substitute(x)))
 
-\S4method{norm_type}{ANY,numeric}(
-  x,
-  type,
-  length = 1,
-  allow_NAs = FALSE,
-  arg = deparse(substitute(x)),
-  ...
-)
+\S4method{norm_type}{ANY,numeric}(x, type, length = 1, allow_NAs = FALSE, arg = deparse(substitute(x)))
 
-\S4method{norm_type}{ANY,integer}(
-  x,
-  type,
-  length = 1,
-  allow_NAs = FALSE,
-  arg = deparse(substitute(x)),
-  ...
-)
+\S4method{norm_type}{ANY,integer}(x, type, length = 1, allow_NAs = FALSE, arg = deparse(substitute(x)))
 }
 \arguments{
 \item{x}{An argument to check.}

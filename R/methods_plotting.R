@@ -22,7 +22,7 @@ autolayer.tornado_df <- function(object, ...) {
       ),
       ...
     ),
-    get_tl_scales(object$tornado)[[1]]
+    scale_list(object$tornado)
   )
 }
 
@@ -356,4 +356,10 @@ scale_type.tornado_list <- function(x) {
   "identity"
 }
 
-
+#' @export
+#' @importFrom ggplot2 ggplot_add
+#' @method ggplot_add covscale
+ggplot_add.covscale <- function(object, plot, object_name) {
+  plot$scales$scales <- c(plot$scales$scales, unclass(object))
+  plot
+}
