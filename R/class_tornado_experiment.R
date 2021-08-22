@@ -272,7 +272,7 @@ setMethod(
 #' @usage NULL
 #' @importFrom SummarizedExperiment colData<-
 setReplaceMethod(
-  "dimnames", c("TornadoExperiment", "list"),
+  "dimnames", c(x = "TornadoExperiment", value = "list"),
   function(x, value) {
     dim <- dim(x)
     names <- mapply(
@@ -283,10 +283,12 @@ setReplaceMethod(
     )
 
     colData <- colData(x)
-    rownames(colData(x)) <- names[[2]]
+    rownames(colData) <- names[[2]]
 
     binData <- binData(x)
-    rownames(binData(x)) <- names[[3]]
+    rownames(binData) <- names[[3]]
+
+    names(x) <- names[[1]]
 
     .int$replaceSlots(
       x, NAMES = names[[1]], colData = colData, binData = binData,
@@ -299,7 +301,7 @@ setReplaceMethod(
 #' @rdname TornadoExperiment
 #' @usage NULL
 setReplaceMethod(
-  "dimnames", c("TornadoExperiment", "NULL"),
+  "dimnames", c(x = "TornadoExperiment", value = "NULL"),
   function(x, value) {
     dimnames(x) <- list(NULL, NULL, NULL)
     x
