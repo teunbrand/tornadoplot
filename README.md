@@ -11,7 +11,7 @@ status](https://www.r-pkg.org/badges/version/tornadoplot)](https://CRAN.R-projec
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![Codecov test
 coverage](https://codecov.io/gh/teunbrand/tornadoplot/branch/master/graph/badge.svg)](https://codecov.io/gh/teunbrand/tornadoplot?branch=master)
-[![R-CMD-check](https://github.com/teunbrand/tornadoplot/workflows/check-bioc/badge.svg)](https://github.com/teunbrand/tornadoplot/actions)
+[![R-CMD-check](https://github.com/teunbrand/tornadoplot/workflows/R-CMD-check/badge.svg)](https://github.com/teunbrand/tornadoplot/actions)
 <!-- badges: end -->
 
 A tornadoplot\* is a heatmap of coverage from genome wide assays centred

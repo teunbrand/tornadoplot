@@ -1,6 +1,6 @@
 Package: tornadoplot
 Title: Tornado Plot
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: 
     person(given = "Teun",
            family = "van den Brand",
@@ -13,6 +13,10 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+BiocViews:
+    Coverage,
+    Epigenetics,
+    Visualization
 Imports: 
     S4Vectors,
     IRanges,
