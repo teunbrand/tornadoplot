@@ -306,7 +306,7 @@ scale_x_tornado <- function(
   ...
 ) {
   expand <- expand %||% c(0, 1)
-  guide  <- guide  %||% guide_axis(check.overlap = TRUE)
+  guide  <- guide  %||% ggplot2::guide_axis(check.overlap = TRUE)
   breaks <- breaks %||% function(x) {
     dodge  <- diff(range(x)) * 0.1
     breaks <- scales::extended_breaks()(x)
@@ -335,11 +335,16 @@ scale_y_tornado <- function(
 ) {
   expand <- expand %||% c(0, 0)
   labels <- labels %||% function(x) {
-    c(rep("", length(x) - 1), x[length(x)])
+    if (length(x) > 1) {
+      c(rep("", length(x) - 1), x[length(x)])
+    } else {
+      x
+    }
   }
   if (is.numeric(alt_lim) && inherits(breaks, "waiver")) {
     breaks <- scales::extended_breaks()(alt_lim)
-    breaks <- sort(union(breaks, alt_lim - c(0, 0.5)))
+    breaks <- breaks[breaks %% 1 == 0]
+    breaks <- sort(union(breaks, alt_lim + c(0.5, -0.5)))
   }
   limits <- limits %||% c(0.5, NA)
 
