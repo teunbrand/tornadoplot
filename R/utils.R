@@ -25,6 +25,7 @@
 #' norm_type(1.26, integer())
 norm_type_or_null <- function(x, type, length = 1, allow_NAs = FALSE,
                               arg = deparse(substitute(x))) {
+  force(arg)
   if (is.null(x)) {
     return(NULL)
   } else {
@@ -40,7 +41,7 @@ norm_type_or_null <- function(x, type, length = 1, allow_NAs = FALSE,
 setGeneric(
   "norm_type", signature = c("x", "type"),
   function(x, type, length = 1, allow_NAs = FALSE,
-           arg = deparse(substitute(x)), ...) {
+           arg = deparse(substitute(x))) {
     standardGeneric("norm_type")
   }
 )
@@ -50,7 +51,7 @@ setGeneric(
 setMethod(
   "norm_type", signature(x = "ANY", type = "numeric"),
   function(x, type, length = 1, allow_NAs = FALSE,
-           arg = deparse(substitute(x)), ...) {
+           arg = deparse(substitute(x))) {
     force(arg)
     x <- expect_length(x, length, arg)
     x <- expect_NAs(x, allow_NAs, arg)
@@ -59,7 +60,7 @@ setMethod(
                     class(type)[[1]], ".")
       x <- tryCatch(
         {as.numeric(x)},
-        error = function(cond) {stop(msg, call. = FALSE); message(cond)},
+        error   = function(cond) {stop(msg, call. = FALSE); message(cond)},
         warning = function(cond) {stop(msg, call. = FALSE); message(cond)}
       )
     }
@@ -72,7 +73,7 @@ setMethod(
 setMethod(
   "norm_type", signature(x = "ANY", type = "integer"),
   function(x, type, length = 1, allow_NAs = FALSE,
-           arg = deparse(substitute(x)), ...) {
+           arg = deparse(substitute(x))) {
     force(arg)
     x <- norm_type(x, numeric(), length = length, allow_NAs = allow_NAs,
                    arg = arg)
@@ -129,3 +130,13 @@ expect_NAs <- function(x, allow_NAs = FALSE, arg = deparse(substitute(x))) {
   if (is.null(x)) y else x
 }
 
+comma_and <- function(x, sep = ", ", last = " and ", quote = "'") {
+  x <- paste0(quote, x, quote)
+  if (length(x) < 2) {
+    return(x)
+  }
+  paste0(
+    paste0(x[-length(x)], collapse = sep),
+    last, x[length(x)]
+  )
+}

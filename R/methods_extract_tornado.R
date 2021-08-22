@@ -237,8 +237,8 @@ pad_coverage <- function(coverage, features, pad_value = 0) {
 
 check_seqlevels <- function(seqlevels_x, seqlevels_y) {
   if (length(intersect(seqlevels_x, seqlevels_y)) == 0) {
-    style_cover <- seqlevelsStyle(seqlevels_x)
-    style_feats <- seqlevelsStyle(seqlevels_y)
+    style_cover <- seqlevelsStyle(seqlevels_x)[[1]]
+    style_feats <- seqlevelsStyle(seqlevels_y)[[1]]
     if (style_feats != style_cover) {
       msg <- paste0(
         "The features and data have no common sequences. This might be due ",
@@ -257,19 +257,13 @@ check_seqlevels <- function(seqlevels_x, seqlevels_y) {
   }
   dif <- setdiff(seqlevels_y, seqlevels_x)
   if (length(dif)) {
-    if (length(dif) == 1) {
-      difnames <- dif
-    } else {
-      difnames <- paste0(
-        paste0(dif[-length(dif)], collapse = ", "),
-        " and ", dif[length(dif)]
-      )
-    }
+    difnames <- comma_and(dif)
     msg <- paste0(
       "The following sequence names were missing from the data but present in ",
       "the features: ", difnames, ". The data will be padded for these ",
       "sequences."
     )
+    warning(msg, call. = FALSE)
   }
   dif
 }
