@@ -77,7 +77,7 @@
 #'   column.}
 #' }
 #' @export
-#' @importFrom BiocGenerics strand
+#' @importFrom BiocGenerics strand strand<- unstrand
 #'
 #' @examples
 #' # Some very small features and data that works
@@ -188,6 +188,15 @@ resolve_features <- function(features, bins,
   features <- resize(granges(features), length(bins), fix = "center")
   # Drop unused seqlevels
   features <- keepSeqlevels(features, seqlevelsInUse(features))
+
+  neg_start <- start(features) < 1
+  if (any(neg_start)) {
+    drop <- as.character(features)[neg_start]
+    msg <- paste0("Dropping ", substr(comma_and(drop), 1, 80),
+                  "due to negative start sizes after setting a common width.")
+    features <- features[!neg_start]
+    warning(msg, call. = FALSE)
+  }
 
   if (length(features) > 50000) {
     # Might be a ridiculous request
