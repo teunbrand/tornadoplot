@@ -335,11 +335,7 @@ scale_y_tornado <- function(
 ) {
   expand <- expand %||% c(0, 0)
   labels <- labels %||% function(x) {
-    if (length(x) > 1) {
-      c(rep("", length(x) - 1), x[length(x)])
-    } else {
-      x
-    }
+    if (length(x) > 1) c(rep("", length(x) - 1), x[length(x)]) else x
   }
   if (is.numeric(alt_lim) && inherits(breaks, "waiver")) {
     breaks <- scales::extended_breaks()(alt_lim)
